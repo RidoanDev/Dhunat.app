@@ -33,17 +33,21 @@ interface Service {
 interface CategoryTemplateProps {
   title: string;
   icon: React.ComponentType<any>;
+  iconColor?: string;
   services: Service[];
   subcategories: string[];
   description?: string;
+  emptyStateMessage?: string;
 }
 
 const CategoryTemplate: React.FC<CategoryTemplateProps> = ({
   title,
   icon: IconComponent,
+  iconColor = "text-blue-600",
   services,
   subcategories,
-  description
+  description,
+  emptyStateMessage = "কোন সেবা পাওয়া যায়নি"
 }) => {
   const [filteredServices, setFilteredServices] = useState(services);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -88,7 +92,7 @@ const CategoryTemplate: React.FC<CategoryTemplateProps> = ({
       
       <div className="px-4 py-4 pb-20">
         <div className="flex items-center mb-4">
-          <IconComponent size={20} className="text-blue-600 mr-2" />
+          <IconComponent size={20} className={iconColor + " mr-2"} />
           <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
         </div>
 
@@ -105,7 +109,7 @@ const CategoryTemplate: React.FC<CategoryTemplateProps> = ({
           {filteredServices.length === 0 ? (
             <div className="text-center py-8">
               <IconComponent size={48} className="text-gray-300 mx-auto mb-3" />
-              <h3 className="text-base font-medium text-gray-900 mb-1">কোন সেবা পাওয়া যায়নি</h3>
+              <h3 className="text-base font-medium text-gray-900 mb-1">{emptyStateMessage}</h3>
               <p className="text-gray-600 text-sm">অন্য ক্যাটাগরিতে খুঁজে দেখুন</p>
             </div>
           ) : (
