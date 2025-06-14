@@ -4,7 +4,6 @@ import Header from '../components/Header';
 import BannerSlider from '../components/BannerSlider';
 import NoticeMarquee from '../components/NoticeMarquee';
 import CategoryGrid from '../components/CategoryGrid';
-import ServiceMap from '../components/ServiceMap';
 import BottomNavBar from '../components/BottomNavBar';
 
 const Home = () => {
@@ -15,7 +14,6 @@ const Home = () => {
         <BannerSlider />
         <NoticeMarquee />
         <CategoryGrid />
-        <ServiceMap />
       </div>
       <BottomNavBar />
     </div>
