@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import BottomNavBar from '../components/BottomNavBar';
-import { MessageSquare, Send, CheckCircle } from 'lucide-react';
+import { MessageSquare, Send, CheckCircle, Mail } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
@@ -40,12 +40,36 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Update request submitted:', formData);
+    
+    const emailSubject = `অ্যাপ আপডেট অনুরোধ - ${formData.category}`;
+    const emailBody = `নাম: ${formData.name}
+ইমেইল: ${formData.email}
+ফোন: ${formData.phone}
+ক্যাটাগরি: ${formData.category}
+আপডেটের ধরন: ${formData.updateType}
+
+বিস্তারিত:
+${formData.message}
+
+ধন্যবাদ,
+${formData.name}`;
+
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      const mailtoLink = `mailto:ridoan.zisan@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+      window.location.href = mailtoLink;
+    } else {
+      const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=ridoan.zisan@gmail.com&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+      window.open(gmailLink, '_blank');
+    }
+
     setIsSubmitted(true);
+    setFormData({ name: '', email: '', phone: '', category: '', updateType: '', message: '' });
+    
     setTimeout(() => {
       setIsSubmitted(false);
-      setFormData({ name: '', email: '', phone: '', category: '', updateType: '', message: '' });
-    }, 3000);
+    }, 5000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -66,19 +90,21 @@ const Contact = () => {
 
         {/* App Update Request Form */}
         <div className="bg-white rounded-lg shadow-sm p-4">
-          <h2 className="text-base font-semibold text-gray-900 mb-3">
-            অ্যাপ আপডেট অনুরোধ
-          </h2>
+          <div className="flex items-center mb-4">
+            <Mail className="text-blue-600 mr-2" size={20} />
+            <h2 className="text-base font-semibold text-gray-900">
+              অ্যাপ আপডেট অনুরোধ
+            </h2>
+          </div>
           
-          {isSubmitted ? (
-            <div className="text-center py-8">
-              <CheckCircle className="text-green-500 mx-auto mb-3" size={48} />
-              <h3 className="text-base font-semibold text-gray-900 mb-2">ধন্যবাদ!</h3>
-              <p className="text-sm text-gray-600">
-                আপনার আপডেট অনুরোধ সফলভাবে পাঠানো হয়েছে। আমরা শীঘ্রই পর্যালোচনা করব।
-              </p>
+          {isSubmitted && (
+            <div className="mb-6 p-4 bg-green-100 text-green-800 rounded-lg flex items-center gap-2">
+              <CheckCircle className="text-green-600" />
+              <span className="text-sm">Gmail এ ইমেইল ড্রাফ্ট তৈরি হয়েছে। আপনার Gmail চেক করুন!</span>
             </div>
-          ) : (
+          )}
+          
+          {!isSubmitted && (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -181,7 +207,7 @@ const Contact = () => {
 
               <Button type="submit" className="w-full">
                 <Send size={16} className="mr-2" />
-                অনুরোধ পাঠান
+                Gmail এ ইমেইল পাঠান
               </Button>
             </form>
           )}
